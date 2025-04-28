@@ -265,6 +265,10 @@ for pdfIndex in range(len(pdf_files)):
             if response == 'y':
                 os.startfile('shuffled_' + pdf_files[pdfIndex], "print")
                 input("\n\nPress Enter to Continue...")
+        else:
+            os.startfile('shuffled_' + pdf_files[pdfIndex], "print")
+            input("\n\nPress Enter to Continue...")
+
 
 
         
