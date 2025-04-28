@@ -71,6 +71,17 @@ pdf_files = glob.glob("*.pdf")
 
 messages = []
 
+printBool = input("\nDo you want to print pdfs? (y/n): ")
+while isinstance(printBool, str):
+    if printBool.lower() == 'n':
+        printBool = False
+    elif printBool.lower() == 'y':
+        printBool = True
+    else:
+        printBool = input("\nInvalid Input. Do you want to print pdfs? (y/n): ")
+
+
+
 for pdfIndex in range(len(pdf_files)):
     pdf_path = pdf_files[pdfIndex]
     print(f"\nReading: {pdf_path}")
@@ -241,7 +252,22 @@ for pdfIndex in range(len(pdf_files)):
 
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
-    
+
+
+    if printBool:
+        if msg != '':
+            response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
+            response = response.lower()
+            while response != 'y' and response != 'n':
+                print("\nInvalid Input\n")
+                response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
+                response = response.lower()
+            if response == 'y':
+                os.startfile('shuffled_' + pdf_files[pdfIndex], "print")
+                input("\n\nPress Enter to Continue...")
+
+
+        
 
     print('\n\n\n')
 
