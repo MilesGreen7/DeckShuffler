@@ -4,9 +4,6 @@ import os
 import sys
 import pdb
 import shutil
-import win32print
-import win32api
-
 
 def paceFinder(pSmall, pLarge):
     minDist = pLarge - pSmall
@@ -265,21 +262,15 @@ for pdfIndex in range(len(pdf_files)):
                 response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
                 response = response.lower()
             if response == 'y':
-                tempPath = os.getcwd()
-                tempPath += '\\shuffled_' + pdf_files[pdfIndex]
-                print(tempPath)
+                tempPath = 'shuffled_' + pdf_files[pdfIndex]
                 os.startfile(tempPath, "print")
-                input("\n\nPress Enter to Continue...")
+                if pdfIndex != len(pdf_files) - 1:
+                    input("\n\nPress Enter to Continue...")
         else:
-            tempPath = os.getcwd()
-            tempPath += '\\shuffled_' + pdf_files[pdfIndex]
-            print(tempPath)
+            tempPath = 'shuffled_' + pdf_files[pdfIndex]
             os.startfile(tempPath, "print")
-            input("\n\nPress Enter to Continue...")
-
-
-
-        
+            if pdfIndex != len(pdf_files) - 1:
+                input("\n\nPress Enter to Continue...")
 
     print('\n\n\n')
 
