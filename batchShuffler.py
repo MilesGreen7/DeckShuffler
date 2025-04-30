@@ -4,6 +4,7 @@ import os
 import sys
 import pdb
 import shutil
+import subprocess
 
 def paceFinder(pSmall, pLarge):
     minDist = pLarge - pSmall
@@ -263,12 +264,26 @@ for pdfIndex in range(len(pdf_files)):
                 response = response.lower()
             if response == 'y':
                 tempPath = 'shuffled_' + pdf_files[pdfIndex]
-                os.startfile(tempPath, "print")
+                sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
+                printerName = "HP42921F (HP LaserJet Pro 4001)"
+
+                subprocess.run([
+                    sumatraPath,
+                    "-print-to", printerName,
+                    tempPath
+                ])
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
             tempPath = 'shuffled_' + pdf_files[pdfIndex]
-            os.startfile(tempPath, "print")
+            sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
+            printerName = "HP42921F (HP LaserJet Pro 4001)"
+
+            subprocess.run([
+                sumatraPath,
+                "-print-to", printerName,
+                tempPath
+            ])
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
 
