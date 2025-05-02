@@ -5,6 +5,8 @@ import sys
 import pdb
 import shutil
 import subprocess
+import win32print
+import win32api
 
 def paceFinder(pSmall, pLarge):
     minDist = pLarge - pSmall
@@ -264,28 +266,29 @@ for pdfIndex in range(len(pdf_files)):
                 response = response.lower()
             if response == 'y':
                 tempPath = 'shuffled_' + pdf_files[pdfIndex]
-                tempPath = os.path.abspath(tempPath)
-                acrobatPath = r"C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe"
+                sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
-                subprocess.run([
-                    acrobatPath,
-                    "/t",
-                    tempPath,
-                    printerName
-                ])
+                printer = win32print.OpenPrinter(printerName)
+                printJob = win32print.StartDocPrinter(printer, 1, (tempPath, None, "RAW"))
+                win32api.ShellExecute(
+                    0, "print", tempPath, f'/d:"{printerName}"', ".", 0
+                )
+                win32print.EndDocPrinter(printer)
+                win32print.ClosePrinter(printer)
+                
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
             tempPath = 'shuffled_' + pdf_files[pdfIndex]
-            tempPath = os.path.abspath(tempPath)
-            acrobatPath = r"C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe"
+            sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
-            subprocess.run([
-                acrobatPath,
-                "/t",
-                tempPath,
-                printerName
-            ])
+            printer = win32print.OpenPrinter(printerName)
+            printJob = win32print.StartDocPrinter(printer, 1, (tempPath, None, "RAW"))
+            win32api.ShellExecute(
+                0, "print", tempPath, f'/d:"{printerName}"', ".", 0
+            )
+            win32print.EndDocPrinter(printer)
+            win32print.ClosePrinter(printer)
 
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
