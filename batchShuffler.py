@@ -63,7 +63,7 @@ if not os.path.exists('oldFiles'):
     os.mkdir('oldFiles')
 
 for pdf in pdf_files:
-    if 'shuffled' in pdf:
+    if 'shuffled' in pdf.lower() or 'progresscheck' in pdf.lower():
         target = os.path.join('oldFiles', os.path.basename(pdf))
         shutil.move(pdf, target)
 
@@ -264,26 +264,29 @@ for pdfIndex in range(len(pdf_files)):
                 response = response.lower()
             if response == 'y':
                 tempPath = 'shuffled_' + pdf_files[pdfIndex]
-                sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
+                tempPath = os.path.abspath(tempPath)
+                acrobatPath = r"C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
-
                 subprocess.run([
-                    sumatraPath,
-                    "-print-to", printerName,
-                    tempPath
+                    acrobatPath,
+                    "/t",
+                    tempPath,
+                    printerName
                 ])
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
             tempPath = 'shuffled_' + pdf_files[pdfIndex]
-            sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
+            tempPath = os.path.abspath(tempPath)
+            acrobatPath = r"C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
-
             subprocess.run([
-                sumatraPath,
-                "-print-to", printerName,
-                tempPath
+                acrobatPath,
+                "/t",
+                tempPath,
+                printerName
             ])
+
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
 
