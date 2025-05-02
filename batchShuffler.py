@@ -5,20 +5,6 @@ import sys
 import pdb
 import shutil
 import subprocess
-import win32print
-import win32api
-
-def paceFinder(pSmall, pLarge):
-    minDist = pLarge - pSmall
-    if minDist == 0:
-        return 1
-    i = 1
-    while True:
-        tempVal = pLarge / (i + 1)
-        if abs(tempVal - pSmall) > minDist:
-            return i
-        minDist = tempVal - pSmall
-        i += 1
 
 def distSum(a, maxDist):
     totalDist = 0
@@ -268,27 +254,25 @@ for pdfIndex in range(len(pdf_files)):
                 tempPath = 'shuffled_' + pdf_files[pdfIndex]
                 sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
-                printer = win32print.OpenPrinter(printerName)
-                printJob = win32print.StartDocPrinter(printer, 1, (tempPath, None, "RAW"))
-                win32api.ShellExecute(
-                    0, "print", tempPath, f'/d:"{printerName}"', ".", 0
-                )
-                win32print.EndDocPrinter(printer)
-                win32print.ClosePrinter(printer)
-                
+
+                subprocess.run([
+                    sumatraPath,
+                    "-print-to", printerName,
+                    tempPath
+                ])
+
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
             tempPath = 'shuffled_' + pdf_files[pdfIndex]
             sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
-            printer = win32print.OpenPrinter(printerName)
-            printJob = win32print.StartDocPrinter(printer, 1, (tempPath, None, "RAW"))
-            win32api.ShellExecute(
-                0, "print", tempPath, f'/d:"{printerName}"', ".", 0
-            )
-            win32print.EndDocPrinter(printer)
-            win32print.ClosePrinter(printer)
+
+            subprocess.run([
+                sumatraPath,
+                "-print-to", printerName,
+                tempPath
+            ])
 
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
