@@ -37,11 +37,13 @@ def distSum(a, maxDist):
     return totalDist, gDist
 
 def qualityTest(a):
+    msg = "\nWARNING: this deck may have poor shuffle starting at page "
+    msgEnd = " consider using different PKs"
     for i in range(len(a)):
         if i + 2 < len(a) and a[i] == a[i+1] == a[i+2]:
-            return "\nWARNING: this deck may have poor shuffle, consider using different PKs"
+            return msg + str(i+1) + msgEnd
         elif i + 10 < len(a) and a[i] == a[i+2] == a[i+4] == a[i+6] == a[i+8] == a[i+10]:
-            return "\nWARNING: this deck may have poor shuffle, consider using different PKs"
+            return msg + str(i+1) + msgEnd
     return ""
 
 
