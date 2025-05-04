@@ -5,11 +5,6 @@ import sys
 import pdb
 import shutil
 import subprocess
-import time
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 def distSum(a, maxDist):
     totalDist = 0
@@ -51,6 +46,7 @@ def qualityTest(a):
             return msg + str(i+1) + msgEnd
     return ""
 
+
 pdf_files = glob.glob("*.pdf")
 
 if not os.path.exists('oldFiles'):
@@ -64,9 +60,6 @@ for pdf in pdf_files:
 pdf_files = glob.glob("*.pdf")
 
 messages = []
-options = None
-service = None
-driver = None
 
 printBool = input("\nDo you want to print pdfs? (y/n): ")
 while isinstance(printBool, str):
@@ -74,11 +67,6 @@ while isinstance(printBool, str):
         printBool = False
     elif printBool.lower() == 'y':
         printBool = True
-        options = Options()
-        options.add_argument('--disable-gpu')
-        options.add_argument('--kiosk-printing')
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=options)
     else:
         printBool = input("\nInvalid Input. Do you want to print pdfs? (y/n): ")
 
@@ -240,6 +228,7 @@ for pdfIndex in range(len(pdf_files)):
     print(f'\nMax Distance Between Topics: {globalDist}')
 
 
+
     newPDF = fitz.open()
     for pk in arrayPKs:
         page = pkCount[pk][1].pop(0)
@@ -265,12 +254,12 @@ for pdfIndex in range(len(pdf_files)):
                 response = response.lower()
             if response == 'y':
                 tempPath = 'shuffled_' + pdf_files[pdfIndex]
-                tempPath = os.path.abspath(tempPath)
-                chromePath = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+                sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
+                printerName = "HP42921F (HP LaserJet Pro 4001)"
 
                 subprocess.run([
-                    chromePath,
-                    "--kiosk-printing",
+                    sumatraPath,
+                    "-print-to", printerName,
                     tempPath
                 ])
 
@@ -278,12 +267,14 @@ for pdfIndex in range(len(pdf_files)):
                     input("\n\nPress Enter to Continue...")
         else:
             tempPath = 'shuffled_' + pdf_files[pdfIndex]
-            tempPath = os.path.abspath(tempPath)
-            tempPath = tempPath.replace("\\", "/")
-            tempPath = "file:///" + tempPath
-            driver.get(tempPath)
-            time.sleep(5)
-            driver.execute_script('window.print();')
+            sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
+            printerName = "HP42921F (HP LaserJet Pro 4001)"
+
+            subprocess.run([
+                sumatraPath,
+                "-print-to", printerName,
+                tempPath
+            ])
 
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
@@ -296,13 +287,8 @@ if len(messages) != 0:
 for m in messages:
     print('\n' + m)
 
-
-
 print("\n\n\nSuccess")
 
 input("\n\nPress Enter to exit...")
-
-if driver != None:
-    driver.quit()
 
 print("")
