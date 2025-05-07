@@ -10,21 +10,31 @@ from io import BytesIO
 
 def imagePDF(pdfName, dpi=200):
     doc = fitz.open('shuffled_' + pdfName)
-    imageList = []
+    pdf = None
 
     for pageNum in range(len(doc)):
         page = doc.load_page(pageNum)
         pix = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB)
         imgBytes = pix.tobytes("png")
         img = Image.open(BytesIO(imgBytes)).convert("RGB")
-        imageList.append(img)
+        widthPT = img.width * 72 / dpi
+        heightPT = img.height * 72 / dpi
 
-    if imageList:
-        imageList[0].save(
-            'shuffled_img_' + pdfName,
-            save_all=True,
-            append_images=imageList[1:]
-        )
+        if pdf is None:
+            pdf = FPDF(unit='pt', format=[widthPT, heightPT])
+
+        pdf.add_page()
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
+            img.save(tmp.name, format="JPEG")
+            tmpPath = tmp.name
+
+        pdf.image(tmpPath, x=0, y=0, w=widthPT, h=heightPT)
+
+        os.remove(tmpPath)
+
+    if pdf:
+        pdf.output('shuffled_img_' + pdfName)
 
     doc.close()
 
