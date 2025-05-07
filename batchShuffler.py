@@ -5,6 +5,26 @@ import sys
 import pdb
 import shutil
 import subprocess
+from PIL import Image
+
+def imagePDF(pdfName, dpi=200):
+    doc = fitz.open('shuffled_' + pdfName)
+    imgPaths = []
+
+    for pageNum in range(len(doc)):
+        page = doc.load_page(pageNum)
+        pix = page.get_pixmap(dpi=dpi)
+        tempPath = f"page_{pageNum}.png"
+        pix.save(tempPath)
+        imgPaths.append(tempPath)
+
+    imageList = [Image.open(p).convert("RGB") for p in imgPaths]
+    imageList[0].save('shuffled_img_' + pdfName, save_all=True, append_images=imageList[1:])
+
+    for p in imgPaths:
+        os.remove(p)
+
+    doc.close()
 
 def distSum(a, maxDist):
     totalDist = 0
@@ -243,7 +263,6 @@ for pdfIndex in range(len(pdf_files)):
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
 
-
     if printBool:
         if msg != '':
             response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
@@ -253,7 +272,8 @@ for pdfIndex in range(len(pdf_files)):
                 response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
                 response = response.lower()
             if response == 'y':
-                tempPath = 'shuffled_' + pdf_files[pdfIndex]
+                imagePDF(pdf_files[pdfIndex])
+                tempPath = 'shuffled_img_' + pdf_files[pdfIndex]
                 sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
 
@@ -266,7 +286,8 @@ for pdfIndex in range(len(pdf_files)):
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
-            tempPath = 'shuffled_' + pdf_files[pdfIndex]
+            imagePDF(pdf_files[pdfIndex])
+            tempPath = 'shuffled_img_' + pdf_files[pdfIndex]
             sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
 
