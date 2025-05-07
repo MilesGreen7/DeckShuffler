@@ -7,6 +7,8 @@ import shutil
 import subprocess
 from PIL import Image
 from io import BytesIO
+from fpdf import FPDF
+import tempfile
 
 def imagePDF(pdfName, dpi=200):
     doc = fitz.open('shuffled_' + pdfName)
