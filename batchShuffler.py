@@ -14,7 +14,7 @@ def imagePDF(pdfName, dpi=200):
 
     for pageNum in range(len(doc)):
         page = doc.load_page(pageNum)
-        pix = page.get_pixmap(dpi=dpi)
+        pix = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB)
         imgBytes = pix.tobytes("png")
         img = Image.open(BytesIO(imgBytes)).convert("RGB")
         imageList.append(img)
@@ -264,7 +264,6 @@ for pdfIndex in range(len(pdf_files)):
 
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
-    imagePDF(pdf_files[pdfIndex])
 
     if printBool:
         if msg != '':
