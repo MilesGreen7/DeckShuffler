@@ -6,23 +6,25 @@ import pdb
 import shutil
 import subprocess
 from PIL import Image
+from io import BytesIO
 
 def imagePDF(pdfName, dpi=200):
     doc = fitz.open('shuffled_' + pdfName)
-    imgPaths = []
+    imageList = []
 
     for pageNum in range(len(doc)):
         page = doc.load_page(pageNum)
         pix = page.get_pixmap(dpi=dpi)
-        tempPath = f"page_{pageNum}.png"
-        pix.save(tempPath)
-        imgPaths.append(tempPath)
+        imgBytes = pix.tobytes("png")
+        img = Image.open(BytesIO(imgBytes)).convert("RGB")
+        imageList.append(img)
 
-    imageList = [Image.open(p).convert("RGB") for p in imgPaths]
-    imageList[0].save('shuffled_img_' + pdfName, save_all=True, append_images=imageList[1:])
-
-    for p in imgPaths:
-        os.remove(p)
+    if imageList:
+        imageList[0].save(
+            'shuffled_img_' + pdfName,
+            save_all=True,
+            append_images=imageList[1:]
+        )
 
     doc.close()
 
@@ -262,6 +264,7 @@ for pdfIndex in range(len(pdf_files)):
 
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
+    imagePDF(pdf_files[pdfIndex])
 
     if printBool:
         if msg != '':
