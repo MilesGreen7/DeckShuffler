@@ -10,12 +10,12 @@ from io import BytesIO
 from fpdf import FPDF
 import tempfile
 
-def imagePDF(pdfName, dpi=200):
-    doc = fitz.open('shuffled_' + pdfName)
+def imagePDF(pdfName, dpi=150):
+    tempDoc = fitz.open('shuffled_' + pdfName)
     pdf = None
 
-    for pageNum in range(len(doc)):
-        page = doc.load_page(pageNum)
+    for pageNum in range(len(tempDoc)):
+        page = tempDoc.load_page(pageNum)
         pix = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB)
         imgBytes = pix.tobytes("png")
         img = Image.open(BytesIO(imgBytes)).convert("RGB")
@@ -38,7 +38,7 @@ def imagePDF(pdfName, dpi=200):
     if pdf:
         pdf.output('shuffled_img_' + pdfName)
 
-    doc.close()
+    tempDoc.close()
 
 def distSum(a, maxDist):
     totalDist = 0
