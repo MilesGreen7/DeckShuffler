@@ -10,35 +10,19 @@ from io import BytesIO
 from fpdf import FPDF
 import tempfile
 
-def imagePDF(pdfName, dpi=150):
-    tempDoc = fitz.open('shuffled_' + pdfName)
-    pdf = None
+def optimizePDF(pathPDF):
 
-    for pageNum in range(len(tempDoc)):
-        page = tempDoc.load_page(pageNum)
-        pix = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB)
-        imgBytes = pix.tobytes("png")
-        img = Image.open(BytesIO(imgBytes)).convert("RGB")
-        widthPT = img.width * 72 / dpi
-        heightPT = img.height * 72 / dpi
+    doc = fitz.open('shuffled_' + pathPDF)
+    
+    for page_num in range(doc.page_count):
+        page = doc.load_page(page_num)
+        page.clean_contents()
 
-        if pdf is None:
-            pdf = FPDF(unit='pt', format=[widthPT, heightPT])
+    while len(doc.embfile_names()) > 0:
+        doc.embfile_del(doc.embfile_names()[-1])
 
-        pdf.add_page()
-
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
-            img.save(tmp.name, format="JPEG")
-            tmpPath = tmp.name
-
-        pdf.image(tmpPath, x=0, y=0, w=widthPT, h=heightPT)
-
-        os.remove(tmpPath)
-
-    if pdf:
-        pdf.output('shuffled_img_' + pdfName)
-
-    tempDoc.close()
+    doc.save('shuffled_flat_' + pathPDF, garbage=4, deflate=True)
+    doc.close()
 
 def distSum(a, maxDist):
     totalDist = 0
@@ -286,8 +270,8 @@ for pdfIndex in range(len(pdf_files)):
                 response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
                 response = response.lower()
             if response == 'y':
-                imagePDF(pdf_files[pdfIndex])
-                tempPath = 'shuffled_img_' + pdf_files[pdfIndex]
+                optimizePDF(pdf_files[pdfIndex])
+                tempPath = 'shuffled_flat_' + pdf_files[pdfIndex]
                 sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
 
@@ -300,8 +284,8 @@ for pdfIndex in range(len(pdf_files)):
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
-            imagePDF(pdf_files[pdfIndex])
-            tempPath = 'shuffled_img_' + pdf_files[pdfIndex]
+            optimizePDF(pdf_files[pdfIndex])
+            tempPath = 'shuffled_flat_' + pdf_files[pdfIndex]
             sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
 
