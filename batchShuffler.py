@@ -5,10 +5,7 @@ import sys
 import pdb
 import shutil
 import subprocess
-from PIL import Image
-from io import BytesIO
-from fpdf import FPDF
-import tempfile
+
 
 def optimizePDF(pathPDF):
 
