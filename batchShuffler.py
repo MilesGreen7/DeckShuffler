@@ -7,6 +7,32 @@ import shutil
 import subprocess
 
 
+def optimizePDF(pathPDF):
+
+    doc = fitz.open('shuffled_' + pathPDF)
+    
+    for page_num in range(doc.page_count):
+        page = doc.load_page(page_num)
+        page.clean_contents()
+
+    while len(doc.embfile_names()) > 0:
+        doc.embfile_del(doc.embfile_names()[-1])
+
+    doc.save('shuffled_flat_' + pathPDF, garbage=4, deflate=True, clean=True)
+    doc.close()
+
+    subprocess.run([
+        r"C:\Program Files\gs\gs10.05.1\bin\gswin64c.exe",
+        "-sDEVICE=pdfwrite",
+        "-dCompatibilityLevel=1.4",
+        "-dPDFSETTINGS=/printer",
+        "-dNOPAUSE",
+        "-dQUIET",
+        "-dBATCH",
+        f"-sOutputFile={'shuffled_flat_new_' + pdf_files[pdfIndex]}",
+        "shuffled_flat_" + pdf_files[pdfIndex]
+    ])
+
 def distSum(a, maxDist):
     totalDist = 0
     gDist = 0
@@ -244,17 +270,7 @@ for pdfIndex in range(len(pdf_files)):
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
 
-    subprocess.run([
-        r"C:\Program Files\gs\gs10.05.1\bin\gswin64c.exe",
-        "-sDEVICE=pdfwrite",
-        "-dCompatibilityLevel=1.4",
-        "-dPDFSETTINGS=/printer",
-        "-dNOPAUSE",
-        "-dQUIET",
-        "-dBATCH",
-        f"-sOutputFile={'shuffled_flat_' + pdf_files[pdfIndex]}",
-        "shuffled_" + pdf_files[pdfIndex]
-    ])
+    optimizePDF(pdf_files[pdfIndex])
 
     if printBool:
         if msg != '':
