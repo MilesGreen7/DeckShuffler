@@ -18,7 +18,7 @@ def optimizePDF(pathPDF):
     while len(doc.embfile_names()) > 0:
         doc.embfile_del(doc.embfile_names()[-1])
 
-    doc.save('shuffled_flat_' + pathPDF, garbage=4, deflate=True)
+    doc.save('shuffled_flat_' + pathPDF, garbage=4, deflate=True, clean=True)
     doc.close()
 
 def distSum(a, maxDist):
@@ -258,6 +258,8 @@ for pdfIndex in range(len(pdf_files)):
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
 
+    optimizePDF(pdf_files[pdfIndex])
+
     if printBool:
         if msg != '':
             response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
@@ -267,7 +269,6 @@ for pdfIndex in range(len(pdf_files)):
                 response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
                 response = response.lower()
             if response == 'y':
-                optimizePDF(pdf_files[pdfIndex])
                 tempPath = 'shuffled_flat_' + pdf_files[pdfIndex]
                 sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
@@ -281,7 +282,6 @@ for pdfIndex in range(len(pdf_files)):
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
-            optimizePDF(pdf_files[pdfIndex])
             tempPath = 'shuffled_flat_' + pdf_files[pdfIndex]
             sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
