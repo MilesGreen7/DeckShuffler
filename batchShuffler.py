@@ -8,18 +8,18 @@ import subprocess
 
 
 def optimizePDF(pathPDF):
+    subprocess.run([
+        r"C:\Program Files\gs\gs10.05.1\bin\gswin64c.exe",
+        "-sDEVICE=pdfwrite",
+        "-dCompatibilityLevel=1.4",
+        "-dPDFSETTINGS=/printer",
+        "-dNOPAUSE",
+        "-dQUIET",
+        "-dBATCH",
+        f"-sOutputFile={'shuffled_flat_' + pathPDF}",
+        "shuffled_" + pathPDF
+    ])
 
-    doc = fitz.open('shuffled_' + pathPDF)
-    
-    for page_num in range(doc.page_count):
-        page = doc.load_page(page_num)
-        page.clean_contents()
-
-    while len(doc.embfile_names()) > 0:
-        doc.embfile_del(doc.embfile_names()[-1])
-
-    doc.save('shuffled_flat_' + pathPDF, garbage=4, deflate=True, clean=True)
-    doc.close()
 
 def distSum(a, maxDist):
     totalDist = 0
