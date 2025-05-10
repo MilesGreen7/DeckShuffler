@@ -271,7 +271,6 @@ for pdfIndex in range(len(pdf_files)):
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
 
-    optimizePDF(pdf_files[pdfIndex])
 
     if printBool:
         if msg != '':
@@ -282,6 +281,7 @@ for pdfIndex in range(len(pdf_files)):
                 response = input("\nThis pdf had poor shuffle. Do you still want to print this pdf? (y/n): ")
                 response = response.lower()
             if response == 'y':
+                optimizePDF(pdf_files[pdfIndex])
                 tempPath = 'shuffled_' + pdf_files[pdfIndex]
                 sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
@@ -295,6 +295,7 @@ for pdfIndex in range(len(pdf_files)):
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
+            optimizePDF(pdf_files[pdfIndex])
             tempPath = 'shuffled_' + pdf_files[pdfIndex]
             sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
