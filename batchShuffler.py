@@ -7,20 +7,6 @@ import shutil
 import subprocess
 
 
-def optimizePDF(pathPDF):
-    subprocess.run([
-        r"C:\Program Files\gs\gs10.05.1\bin\gswin64c.exe",
-        "-sDEVICE=pdfwrite",
-        "-dCompatibilityLevel=1.4",
-        "-dPDFSETTINGS=/printer",
-        "-dNOPAUSE",
-        "-dQUIET",
-        "-dBATCH",
-        f"-sOutputFile={'shuffled_flat_' + pathPDF}",
-        "shuffled_" + pathPDF
-    ])
-
-
 def distSum(a, maxDist):
     totalDist = 0
     gDist = 0
@@ -258,7 +244,17 @@ for pdfIndex in range(len(pdf_files)):
     newPDF.save('shuffled_' + pdf_files[pdfIndex])
     newPDF.close()
 
-    optimizePDF(pdf_files[pdfIndex])
+    subprocess.run([
+        r"C:\Program Files\gs\gs10.05.1\bin\gswin64c.exe",
+        "-sDEVICE=pdfwrite",
+        "-dCompatibilityLevel=1.4",
+        "-dPDFSETTINGS=/printer",
+        "-dNOPAUSE",
+        "-dQUIET",
+        "-dBATCH",
+        f"-sOutputFile={'shuffled_flat_' + pdf_files[pdfIndex]}",
+        "shuffled_" + pdf_files[pdfIndex]
+    ])
 
     if printBool:
         if msg != '':
