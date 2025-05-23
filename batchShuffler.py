@@ -21,18 +21,7 @@ def optimizePDF(pathPDF):
     doc.save('shuffled_temp_' + pathPDF, garbage=4, deflate=True, clean=True)
     doc.close()
 
-    subprocess.run([
-        r"C:\Program Files\gs\gs10.05.1\bin\gswin64c.exe",
-        "-sDEVICE=pdfwrite",
-        "-dCompatibilityLevel=1.4",
-        "-dPDFSETTINGS=/printer",
-        "-dNOPAUSE",
-        "-dQUIET",
-        "-dBATCH",
-        f"-sOutputFile={'shuffled_' + pathPDF}",
-        "shuffled_temp_" + pathPDF
-    ])
-    os.remove("shuffled_temp_" + pathPDF)
+    os.remove("shuffled_" + pathPDF)
 
 def distSum(a, maxDist):
     totalDist = 0
@@ -282,29 +271,43 @@ for pdfIndex in range(len(pdf_files)):
                 response = response.lower()
             if response == 'y':
                 optimizePDF(pdf_files[pdfIndex])
-                tempPath = 'shuffled_' + pdf_files[pdfIndex]
-                sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
                 printerName = "HP42921F (HP LaserJet Pro 4001)"
+                tempPath = 'shuffled_temp_' + pdf_files[pdfIndex]
 
+                chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        
+                tempPath = os.path.abspath(tempPath).replace("\\", "/")
+                tempPath = f"file:///" + tempPath
+                
                 subprocess.run([
-                    sumatraPath,
-                    "-print-to", printerName,
+                chrome_path,
+                    "--print-to-pdf-no-header",
+                    f"--print-to-printer={printerName}",
+                    "--kiosk-printing",
+                    "--virtual-time-budget=30000",
                     tempPath
-                ])
+                ], check=True)
 
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
         else:
             optimizePDF(pdf_files[pdfIndex])
-            tempPath = 'shuffled_' + pdf_files[pdfIndex]
-            sumatraPath = r"C:\Users\speed\AppData\Local\SumatraPDF\SumatraPDF.exe"
             printerName = "HP42921F (HP LaserJet Pro 4001)"
+            tempPath = 'shuffled_temp_' + pdf_files[pdfIndex]
 
+            chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    
+            tempPath = os.path.abspath(tempPath).replace("\\", "/")
+            tempPath = f"file:///" + tempPath
+            
             subprocess.run([
-                sumatraPath,
-                "-print-to", printerName,
+            chrome_path,
+                "--print-to-pdf-no-header",
+                f"--print-to-printer={printerName}",
+                "--kiosk-printing",
+                "--virtual-time-budget=30000",
                 tempPath
-            ])
+            ], check=True)
 
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
