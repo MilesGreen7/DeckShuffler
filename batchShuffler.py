@@ -313,9 +313,11 @@ while pdfIndex < len(pdf_files):
                 input("\n\nPress Enter to Continue...")
 
 
-    if pdfIndex == len(pdf_files) - 1:
-        input("\n\nPress Enter to Continue...")
-        pdfIndex = -1
+    while pdfIndex == len(pdf_files) - 1:
+        tempResponse = input("\n\nTo continue, add more decks to directory then press enter to continue or enter q to quit...")
+        if tempResponse.lower() == 'q':
+            break
+
         pdf_files = glob.glob("*.pdf")
 
         if not os.path.exists('oldFiles'):
@@ -332,6 +334,8 @@ while pdfIndex < len(pdf_files):
                 del pdf_files[t]
             else:
                 t += 1
+
+        pdfIndex = -1
 
 
     print('\n\n\n')
