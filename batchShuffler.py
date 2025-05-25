@@ -87,9 +87,9 @@ while isinstance(printBool, str):
     else:
         printBool = input("\nInvalid Input. Do you want to print pdfs? (y/n): ")
 
+pdfIndex = 0
 
-
-for pdfIndex in range(len(pdf_files)):
+while pdfIndex < len(pdf_files):
     pdf_path = pdf_files[pdfIndex]
     print(f"\nReading: {pdf_path}")
 
@@ -312,7 +312,30 @@ for pdfIndex in range(len(pdf_files)):
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
 
+
+    if pdfIndex == len(pdf_files) - 1:
+        input("\n\nPress Enter to Continue...")
+        pdfIndex = -1
+        pdf_files = glob.glob("*.pdf")
+
+        if not os.path.exists('oldFiles'):
+            os.mkdir('oldFiles')
+
+        t = 0
+        while t < len(pdf_files):
+
+            if 'progresscheck' in pdf_files[t].lower():
+                target = os.path.join('oldFiles', os.path.basename(pdf_files[t]))
+                shutil.move(pdf_files[t], target)
+                del pdf_files[t]
+            elif 'shuffled' in pdf_files[t].lower():
+                del pdf_files[t]
+            else:
+                t += 1
+
+
     print('\n\n\n')
+    pdfIndex += 1
 
 
 if len(messages) != 0:
