@@ -5,6 +5,20 @@ import sys
 import pdb
 import shutil
 import subprocess
+import psutil
+
+def isChromeOpen():
+    chromeOpen = False
+    for process in psutil.process_iter(['name', 'cmdline']):
+        try:
+            if process.info['name'] and 'chrome' in process.info['name'].lower():
+                if process.info['cmdline'] and '--kiosk-printing' in process.info['cmdline']:
+                    return False
+                else:
+                    chromeOpen = True
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+    return chromeOpen
 
 
 def optimizePDF(pathPDF):
@@ -84,8 +98,13 @@ while isinstance(printBool, str):
         printBool = False
     elif printBool.lower() == 'y':
         printBool = True
+        m = ''
+        while isChromeOpen() and m.lower() != 'b':
+            m = input("\nSome instances of chrome are running, please close all instances before proceeding, or enter b to bypass: ")
+        print("\n\n\n")
     else:
         printBool = input("\nInvalid Input. Do you want to print pdfs? (y/n): ")
+
 
 pdfIndex = 0
 
@@ -280,13 +299,12 @@ while pdfIndex < len(pdf_files):
                 tempPath = f"file:///" + tempPath
                 
                 subprocess.run([
-                chrome_path,
+                    chrome_path,
                     "--print-to-pdf-no-header",
                     f"--print-to-printer={printerName}",
                     "--kiosk-printing",
-                    "--virtual-time-budget=30000",
                     tempPath
-                ], check=True)
+                ])
 
                 if pdfIndex != len(pdf_files) - 1:
                     input("\n\nPress Enter to Continue...")
@@ -301,13 +319,12 @@ while pdfIndex < len(pdf_files):
             tempPath = f"file:///" + tempPath
             
             subprocess.run([
-            chrome_path,
+                chrome_path,
                 "--print-to-pdf-no-header",
                 f"--print-to-printer={printerName}",
                 "--kiosk-printing",
-                "--virtual-time-budget=30000",
                 tempPath
-            ], check=True)
+            ])
 
             if pdfIndex != len(pdf_files) - 1:
                 input("\n\nPress Enter to Continue...")
