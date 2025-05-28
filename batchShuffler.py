@@ -298,7 +298,7 @@ while pdfIndex < len(pdf_files):
                 tempPath = os.path.abspath(tempPath).replace("\\", "/")
                 tempPath = f"file:///" + tempPath
                 
-                subprocess.run([
+                subprocess.Popen([
                     chrome_path,
                     "--print-to-pdf-no-header",
                     f"--print-to-printer={printerName}",
@@ -318,7 +318,7 @@ while pdfIndex < len(pdf_files):
             tempPath = os.path.abspath(tempPath).replace("\\", "/")
             tempPath = f"file:///" + tempPath
             
-            subprocess.run([
+            subprocess.Popen([
                 chrome_path,
                 "--print-to-pdf-no-header",
                 f"--print-to-printer={printerName}",
